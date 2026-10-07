@@ -1,0 +1,99 @@
+name: Fuzz
+
+on:
+  pull_request:
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'crates/**'
+      - 'scripts/generate_conformance.py'
+      - 'scripts/generate_unicode.py'
+      - 'fuzz/**'
+      - '.github/workflows/fuzz.yml'
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fuzz-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fuzz:
+    name: ${{ matrix.target }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [reader, lookup, python, structured]
+    env:
+      RUSTUP_TOOLCHAIN: nightly-2026-09-07
+      FUZZ_TARGET: ${{ matrix.target }}
+      FUZZ_SECONDS: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '900' || '900' }}
+      FUZZ_SEED: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@d1031067263f94b142dd6c0ce24c5eb9d02d52a0
+        with:
+          toolchain: nightly-2026-09-07
+          components: rust-src
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12.13'
+      - run: cargo install cargo-fuzz --version 0.13.2 --locked
+      - run: cargo fetch --manifest-path fuzz/Cargo.toml --locked
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: fuzz/generated/${{ matrix.target }}
+          key: fuzz-corpus-v1-${{ matrix.target }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: fuzz-corpus-v1-${{ matrix.target }}-
+      - name: Record campaign inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "fuzz/generated/$FUZZ_TARGET" "fuzz/artifacts/$FUZZ_TARGET" fuzz/logs
+          python3 fuzz/seed_corpus.py "$FUZZ_TARGET" > "fuzz/logs/$FUZZ_TARGET-seeds.json"
+          {
+            git rev-parse HEAD
+            rustc -Vv
+            python3 --version
+            cargo fuzz --version
+            uname -a
+            printf 'target=%s\nseconds=%s\nseed=%s\n' "$FUZZ_TARGET" "$FUZZ_SECONDS" "$FUZZ_SEED"
+            sha256sum Cargo.lock crates/astral-ini/src/*.rs fuzz/Cargo.lock fuzz/ini.dict fuzz/fuzz_targets/*.rs fuzz/fuzz_targets/support/*.rs scripts/generate_conformance.py scripts/generate_unicode.py fuzz/python_oracle.py
+            find "fuzz/generated/$FUZZ_TARGET" -type f -exec sha256sum '{}' + | sort
+          } > "fuzz/logs/$FUZZ_TARGET-inputs.txt"
+      - name: Fuzz with AddressSanitizer
+        shell: bash
+        env:
+          ASAN_OPTIONS: detect_leaks=1
+        run: |
+          set -euo pipefail
+          cargo fuzz run "$FUZZ_TARGET" "fuzz/generated/$FUZZ_TARGET" -- \
+            -dict=fuzz/ini.dict -max_len=16384 -len_control=0 \
+            -max_total_time="$FUZZ_SECONDS" -seed="$FUZZ_SEED" \
+            -timeout=5 -rss_limit_mb=2048 -print_final_stats=1 \
+            2>&1 | tee "fuzz/logs/$FUZZ_TARGET.log"
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        if: success() && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        with:
+          path: fuzz/generated/${{ matrix.target }}
+          key: fuzz-corpus-v1-${{ matrix.target }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: fuzz-${{ matrix.target }}
+          path: |
+            fuzz/logs/
+            fuzz/artifacts/${{ matrix.target }}/
+            fuzz/generated/${{ matrix.target }}/
+          if-no-files-found: warn
+          retention-days: 30

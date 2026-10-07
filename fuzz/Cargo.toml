@@ -1,0 +1,44 @@
+[package]
+name = "astral-ini-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[package.metadata]
+cargo-fuzz = true
+
+[workspace]
+members = ["."]
+
+[dependencies]
+astral-ini = { path = "../crates/astral-ini" }
+libfuzzer-sys = "0.4"
+serde_json = { version = "1.0", default-features = false, features = ["std"] }
+
+[[bin]]
+name = "reader"
+path = "fuzz_targets/reader.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "lookup"
+path = "fuzz_targets/lookup.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "python"
+path = "fuzz_targets/python.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "structured"
+path = "fuzz_targets/structured.rs"
+test = false
+doc = false
+bench = false
