@@ -8,7 +8,26 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-TARGETS = ("reader", "lookup", "python", "structured")
+TARGETS = ("reader", "lookup", "python", "lookup_python", "structured")
+
+
+def lookup_seeds(cases):
+    for case in cases:
+        expected = case["expected"]
+        if "error" in expected:
+            continue
+        source = case["input"].encode()
+        sections = [("DEFAULT", expected["defaults"]), *expected["sections"]]
+        probes = [("", ""), ("missing", "missing")]
+        for section, options in sections:
+            probes.append((section, "missing"))
+            if options:
+                name = options[0][0]
+                probes.extend((section, value) for value in (name, name.upper(), name.swapcase(), f" {name} "))
+        for section, name in probes:
+            section = section.encode()
+            name = name.encode()
+            yield len(section).to_bytes(2, "little") + len(name).to_bytes(2, "little") + section + name + source
 
 
 def main():
@@ -37,11 +56,12 @@ def main():
     }
     # Start with multi-line state transitions as well as individual grammar rules.
     structured.update(bytes((0, name, 1, 0, 3, name, 2, 0, 7, 0, 0, 0, 3, name, 3, 2)) for name in range(11))
+    lookups = set(lookup_seeds(cases))
     report = {}
     for target in (arguments.target,) if arguments.target else TARGETS:
         corpus = ROOT / "fuzz/generated" / target
         corpus.mkdir(parents=True, exist_ok=True)
-        seeds = structured if target == "structured" else inputs
+        seeds = {"structured": structured, "lookup_python": lookups}.get(target, inputs)
         for data in seeds:
             (corpus / hashlib.sha256(data).hexdigest()).write_bytes(data)
         report[target] = {"seeds": len(seeds), "bytes": sum(map(len, seeds))}

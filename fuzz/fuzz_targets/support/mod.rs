@@ -20,13 +20,14 @@ pub(crate) fn profiles() -> impl Iterator<Item = (bool, &'static str, Options)> 
     })
 }
 
-pub(crate) fn snapshot(input: &str, options: Options) -> Value {
+pub(crate) fn snapshot(input: &str, options: Options, lookups: &[(&str, &str)]) -> Value {
     match options.parse(input) {
         Ok(ini) => json!({
             "defaults": ini.defaults().collect::<Vec<_>>(),
             "sections": ini.sections().map(|(name, section)| {
                 (name, section.iter().collect::<Vec<_>>())
             }).collect::<Vec<_>>(),
+            "lookups": lookups.iter().map(|&(section, name)| ini.get(section, name)).collect::<Vec<_>>(),
         }),
         Err(error) => json!({
             "error": {

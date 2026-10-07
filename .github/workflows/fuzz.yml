@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [reader, lookup, python, structured]
+        target: [reader, lookup, python, lookup_python, structured]
     env:
       RUSTUP_TOOLCHAIN: nightly-2026-09-07
       FUZZ_TARGET: ${{ matrix.target }}

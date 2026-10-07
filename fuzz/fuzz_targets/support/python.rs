@@ -52,7 +52,7 @@ impl Drop for Oracle {
 }
 
 /// Compare all dialects through one persistent Python process per fuzz worker.
-pub(crate) fn compare(input: &str) {
+pub(crate) fn compare(input: &str, lookups: &[(&str, &str)]) {
     thread_local! {
         static ORACLE: RefCell<Oracle> = RefCell::new(Oracle::start());
     }
@@ -60,10 +60,14 @@ pub(crate) fn compare(input: &str) {
     ORACLE.with(|oracle| {
         let mut oracle = oracle.borrow_mut();
         for (case_sensitive, delimiters, options) in super::support::profiles() {
-            let request =
-                json!({"input": input, "case_sensitive": case_sensitive, "delimiters": delimiters});
+            let request = json!({
+                "input": input,
+                "case_sensitive": case_sensitive,
+                "delimiters": delimiters,
+                "lookups": lookups,
+            });
             assert_eq!(
-                super::support::snapshot(input, options),
+                super::support::snapshot(input, options, lookups),
                 oracle.inspect(&request),
                 "{request}"
             );

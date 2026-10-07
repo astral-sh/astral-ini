@@ -37,6 +37,13 @@ doc = false
 bench = false
 
 [[bin]]
+name = "lookup_python"
+path = "fuzz_targets/lookup_python.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
 name = "structured"
 path = "fuzz_targets/structured.rs"
 test = false

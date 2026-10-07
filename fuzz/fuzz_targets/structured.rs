@@ -37,5 +37,5 @@ fuzz_target!(|data: &[u8]| {
         input.push_str(&line);
         input.push_str(endings[usize::from(chunk[3]) % endings.len()]);
     }
-    python::compare(&input);
+    python::compare(&input, &[]);
 });
