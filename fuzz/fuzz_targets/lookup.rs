@@ -21,16 +21,7 @@ fuzz_target!(|data: &[u8]| {
                 assert_eq!(section.get(key), Some(value));
                 assert_eq!(ini.get(name, key), Some(value));
                 if !case_sensitive {
-                    let alternate: String = key
-                        .chars()
-                        .map(|character| {
-                            if character.is_ascii_lowercase() {
-                                character.to_ascii_uppercase()
-                            } else {
-                                character
-                            }
-                        })
-                        .collect();
+                    let alternate = key.to_ascii_uppercase();
                     assert_eq!(section.get(&alternate), Some(value));
                 }
             }
