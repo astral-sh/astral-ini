@@ -18,20 +18,16 @@ python3 scripts/generate_unicode.py --check
 python3 scripts/check_unicode.py
 ```
 
-Use `--write` to regenerate it. The generator's `--stdin` mode accepts JSON lines
-containing `input`, `case_sensitive`, and `delimiters` (`"="` or `"=:"`). It returns
-ordered defaults and section items, or the error category and one-based line.
-Parsing uses `ConfigParser(interpolation=None)` and universal newlines.
-The Unicode check compares every Unicode scalar's lowercase mapping and sigma
-contexts against Python. See [Performance](docs/performance.md) for equivalent
-workload benchmarks and allocation measurements.
+See [Conformance](docs/conformance.md) for the compatibility contract and corpus
+generator, and [Performance](docs/performance.md) for benchmarks and allocation
+measurements.
 
 ## Fuzzing
 
 | Target | Checks |
 | --- | --- |
 | `reader` | Newline normalization and error locations across all four parser profiles |
-| `lookup` | Section and option lookups agree with iteration, including inherited defaults and case folding |
+| `lookup` | Section and option lookups agree with iteration, including inherited defaults and name normalization |
 | `python` | Arbitrary text against Python's defaults, section items, and error category and line |
 | `structured` | Grammar-generated sections, options, continuations, comments, Unicode, and malformed lines against Python |
 

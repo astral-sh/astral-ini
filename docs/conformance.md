@@ -8,13 +8,6 @@ Python's less obvious rules are part of this contract: section names retain inte
 
 The checked-in corpus was generated with CPython 3.12.13 and Unicode 15.0.0. It covers all four combinations of delimiter and case handling, with packaging examples, whitespace and indentation combinations, malformed inputs, defaults, Unicode casing, and deterministic mixed-line cases. Generated lowercase and contextual-sigma tables pin behavior to Unicode 15, including characters that newer Unicode versions assign different case mappings. Invalid UTF-8 is outside the string reader's input contract.
 
-```sh
-python3 scripts/generate_conformance.py --check
-python3 scripts/generate_unicode.py --check
-python3 scripts/check_unicode.py
-cargo test -p astral-ini --test python
-```
-
-`--write` regenerates the reference corpus. `--stdin` exposes the same oracle as newline-delimited JSON for differential fuzzing. LF, CRLF, and bare CR are normalized as by Python's text-file reader; Python's `read_string` handles bare CR differently and is not the oracle.
+See [Contributing](../CONTRIBUTING.md#checks) for the compatibility checks. Run `scripts/generate_conformance.py --write` to regenerate the reference corpus. Its `--stdin` mode accepts newline-delimited JSON with `input`, `case_sensitive`, and `delimiters` (`"="` or `"=:"`), returning ordered defaults and section items, or the error category and one-based line. LF, CRLF, and bare CR are normalized as by Python's text-file reader; Python's `read_string` handles bare CR differently and is not the oracle.
 
 Interpolation, custom comment syntax, valueless options, unnamed sections, multi-file merging, and mutation are outside this reader's scope. The [`EXTERNALLY-MANAGED` specification](https://packaging.python.org/en/latest/specifications/externally-managed-environments/#marking-an-interpreter-as-using-an-external-package-manager) also uses interpolation-free `ConfigParser` semantics. Python's [`importlib.metadata` reader](https://github.com/python/cpython/blob/3.12/Lib/importlib/metadata/__init__.py) uses a different INI subset and is not the compatibility target.

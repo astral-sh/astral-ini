@@ -1,8 +1,9 @@
 //! Read-only INI parsing for Python packaging.
 //!
-//! Parsing follows Python's `ConfigParser(interpolation=None)`: duplicate sections
-//! and options are errors, option names are lowercase, and `DEFAULT` options are
-//! inherited. Use [`Options`] for case-sensitive names and `=`-only delimiters.
+//! Parsing follows CPython 3.12's `ConfigParser(interpolation=None)`: duplicate
+//! sections and options are errors, option names are lowercased using Unicode 15,
+//! and `DEFAULT` options are inherited. Use [`Options`] for case-sensitive names
+//! and `=`-only delimiters.
 //!
 //! ```
 //! use astral_ini::{Delimiters, Options};
@@ -36,8 +37,9 @@ pub enum Delimiters {
 
 /// Parsing options for the supported Python INI dialects.
 ///
-/// Interpolation, valueless options, inline comments, and unnamed sections are
-/// unsupported. Section names are always case-sensitive.
+/// Section names are always case-sensitive. Only full-line `#` and `;` comments
+/// are removed; inline comment markers and interpolation syntax remain literal.
+/// Valueless options and unnamed sections are rejected.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Options {
     case_sensitive: bool,
@@ -163,6 +165,8 @@ pub struct Ini<'a> {
 
 impl<'a> Ini<'a> {
     /// Parse with Python's default delimiters and case-insensitive option names.
+    ///
+    /// See [`Options::parse`] for newline handling, borrowing, and error precedence.
     pub fn parse(input: &'a str) -> Result<Self, Error> {
         Options::default().parse(input)
     }
@@ -222,6 +226,9 @@ pub struct Section<'s, 'a> {
 
 impl<'s> Section<'s, '_> {
     /// Look up an option using the document's case sensitivity, including defaults.
+    ///
+    /// Lookup preserves surrounding whitespace. Case-insensitive lookups use
+    /// Python's lowercase transform, which keeps `ß` and `ss` distinct.
     pub fn get(self, name: &str) -> Option<&'s str> {
         let name = normalize(name, self.case_sensitive);
         self.properties
@@ -305,6 +312,7 @@ fn whitespace(c: char) -> bool {
     c.is_whitespace() || matches!(c, '\u{1c}'..='\u{1f}')
 }
 
+/// Apply Python's option-name transform, borrowing names that remain unchanged.
 fn normalize(name: &str, case_sensitive: bool) -> Cow<'_, str> {
     if case_sensitive || (name.is_ascii() && !name.bytes().any(|b| b.is_ascii_uppercase())) {
         return Cow::Borrowed(name);

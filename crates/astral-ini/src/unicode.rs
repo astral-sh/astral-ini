@@ -33,6 +33,7 @@ pub(crate) fn lowercase(source: &str) -> String {
     result
 }
 
+/// Apply a single-character mapping; the caller handles expansion and final sigma.
 fn lowercase_character(character: char) -> char {
     let codepoint = u32::from(character);
     let index = data::LOWERCASE.partition_point(|&(start, _, _, _)| start <= codepoint);
@@ -46,6 +47,7 @@ fn lowercase_character(character: char) -> char {
     character
 }
 
+/// Test membership in sorted, non-overlapping inclusive Unicode ranges.
 fn contains(ranges: &[(u32, u32)], character: char) -> bool {
     let codepoint = u32::from(character);
     let index = ranges.partition_point(|&(_, end)| end < codepoint);
