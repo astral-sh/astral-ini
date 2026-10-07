@@ -8,7 +8,7 @@ version = "0.0.1"
 edition = "2024"
 rust-version = "1.97"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/viarius-experiments/astral-ini"
+repository = "https://github.com/astral-sh/astral-ini"
 
 [workspace.dependencies]
 indexmap = "2.12.0"
