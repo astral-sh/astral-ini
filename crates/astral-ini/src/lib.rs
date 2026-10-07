@@ -106,12 +106,10 @@ impl Options {
             }
             indent = current_indent;
             blanks = 0;
-            if let Some(end) = value
-                .strip_prefix('[')
-                .and_then(|s| s.rfind(']').map(|i| i + 1))
-                && end > 1
+            if let Some(header) = value.strip_prefix('[')
+                && let Some((name, _)) = header.rsplit_once(']')
+                && !name.is_empty()
             {
-                let name = &value[1..end];
                 section = Some(if name == "DEFAULT" {
                     SectionIndex::Defaults
                 } else {
@@ -136,7 +134,8 @@ impl Options {
                 continue;
             };
             let name = value[..delimiter].trim_end_matches(whitespace);
-            if name.is_empty() {
+            let has_name = !name.is_empty();
+            if !has_name {
                 invalid.get_or_insert(Error::new(ErrorKind::InvalidLine, line_number));
             }
             let name = normalize(name, self.case_sensitive);
@@ -146,7 +145,7 @@ impl Options {
             if replaced.is_some() {
                 return Err(Error::new(ErrorKind::DuplicateOption, line_number));
             }
-            option = (!properties.get_index(index).unwrap().0.is_empty()).then_some(index);
+            option = has_name.then_some(index);
         }
         if let Some(error) = invalid {
             return Err(error);
