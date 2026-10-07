@@ -12,6 +12,9 @@ description = "A high-performance INI parser designed for Python packaging"
 indexmap.workspace = true
 memchr.workspace = true
 
+[dev-dependencies]
+serde.workspace = true
+serde_json.workspace = true
+
 [lints]
 workspace = true
-

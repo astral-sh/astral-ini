@@ -20,7 +20,7 @@ separators for `entry_points.txt`.
 
 The reader accepts UTF-8 text and borrows names and values where possible.
 Interpolation, writing, mutation, and merging multiple files are outside its
-scope.
+scope. See [conformance](docs/conformance.md) for the supported Python behavior.
 
 ## License
 
