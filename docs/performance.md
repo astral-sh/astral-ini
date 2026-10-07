@@ -10,16 +10,25 @@ six round aggregates, not confidence intervals.
 
 | Inputs | Operation | System allocator | jemalloc |
 | --- | --- | --- | --- |
-| 11 captured files | Parse and drop | 6.42× (6.35–6.48×) | 5.23× (5.20–5.24×) |
-| 11 captured files | Owned extraction | 5.60× (5.57–5.65×) | 4.58× (4.54–4.60×) |
-| 12 synthetic cases | Parse and drop | 7.85× (7.75–7.93×) | 6.50× (6.47–6.52×) |
-| 12 synthetic cases | Owned extraction | 6.52× (6.45–6.58×) | 5.44× (5.41–5.46×) |
+| 11 captured files | Parse and drop | 6.63× (6.56–6.69×) | 5.67× (5.59–5.87×) |
+| 11 captured files | Owned extraction | 5.76× (5.68–5.84×) | 4.98× (4.94–5.01×) |
+| 12 synthetic cases | Parse and drop | 8.23× (8.17–8.30×) | 6.97× (6.91–7.16×) |
+| 12 synthetic cases | Owned extraction | 6.71× (6.67–6.77×) | 5.84× (5.81–5.88×) |
 
 Every case, operation, and allocator took less time in all six paired rounds.
-The smallest geometric speedup was 1.62× for the synthetic comment-heavy parse;
-the smallest improvement in any individual round was 37.6% less time.
+The smallest geometric speedup was 1.84× for the synthetic comment-heavy parse;
+the smallest improvement in any individual round was 43.6% less time.
 [`performance.csv`](performance.csv) includes all 92 case/operation/allocator
 comparisons, absolute times, and round ranges.
+
+Removing the redundant trailing-value trim reduced captured-file parse time by
+1.69% with the system allocator and 2.72% with jemalloc; owned extraction improved
+by 2.23% and 3.63%. The synthetic Unicode case cost about 6 ns more to parse and
+10 ns more to extract with the system allocator, consistently across all six
+rounds. Captured `configparser` control aggregates also shifted between builds
+(−1.75% to +1.16%); these comparisons use direct timings without normalization.
+[`trim-comparison.csv`](trim-comparison.csv) includes every case and its paired
+control, including the small costs that aggregate improvements can hide.
 
 Across the 11 captured files, parsing made 110 allocation or reallocation
 requests versus 1,162, requesting 16,061 versus 59,239 bytes.
@@ -33,8 +42,9 @@ LTO, and one codegen unit. Both allocator builds used identical source files;
 source and binary hashes were checked before and after timing. The run contains
 1,104 observations and 20,976 samples. Compiler, source, binary, and raw-result
 hashes are recorded in [`performance-provenance.json`](performance-provenance.json).
-The current sources reproduced both measured release binaries byte-for-byte in
-isolated build directories.
+The binaries were built in isolated directories. The run used six balanced
+orders of three parser builds, shuffled cases, and alternating allocator order;
+the table uses this build and its own `configparser` timings.
 
 ```console
 cargo bench --bench parse > system.jsonl
@@ -75,7 +85,8 @@ optionally pinning the executable to one CPU. Compare paired rounds per case and
 report captured and synthetic results separately; aggregate speedups alone can
 hide regressions.
 
-Debug builds and `cargo test --all-targets` run equality checks without timing.
+Debug builds, including default `cargo test --all-targets`, run equality checks
+without timing.
 Use `cargo bench` for measurements. Filter or shorten a run with:
 
 ```console
