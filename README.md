@@ -22,6 +22,18 @@ The reader accepts UTF-8 text and borrows names and values where possible.
 Interpolation, writing, mutation, and merging multiple files are outside its
 scope. See [conformance](docs/conformance.md) for the supported Python behavior.
 
+## Benchmarks
+
+Owned extraction from captured packaging files:
+
+| Parser | pip | Babel | setuptools | virtualenv | Requests setup.cfg |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| astral-ini | 0.38 | 1.56 | 4.20 | 2.46 | 1.17 |
+| configparser 3.2.0 | 1.99 | 9.13 | 33.87 | 17.57 | 5.69 |
+
+Times in microseconds on Linux x86-64 with the system allocator; lower is better.
+See [performance](docs/performance.md) for all workloads and measurement details.
+
 ## License
 
 astral-ini is licensed under either of

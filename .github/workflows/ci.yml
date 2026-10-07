@@ -39,6 +39,7 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
       - run: cargo test --workspace --all-targets --all-features --locked
       - run: cargo test --workspace --doc --all-features --locked
+      - run: cargo run --example allocations --locked > allocations.jsonl
       - run: cargo doc --workspace --no-deps --all-features --locked
         env:
           RUSTDOCFLAGS: -D warnings
