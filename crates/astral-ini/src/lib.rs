@@ -95,8 +95,14 @@ impl Options {
             {
                 let properties = ini.properties_mut(section);
                 let (_, previous) = properties.get_index_mut(option).unwrap();
+                let additional = blanks + 1 + value.len();
+                if let Cow::Borrowed(prefix) = previous {
+                    let mut owned = String::with_capacity(prefix.len() + additional);
+                    owned.push_str(prefix);
+                    *previous = Cow::Owned(owned);
+                }
                 let previous = previous.to_mut();
-                previous.reserve(blanks + 1 + value.len());
+                previous.reserve(additional);
                 previous.extend(std::iter::repeat_n('\n', blanks + 1));
                 previous.push_str(value);
                 blanks = 0;
