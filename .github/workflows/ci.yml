@@ -72,3 +72,7 @@ jobs:
         with:
           toolchain: '1.97.1'
       - run: cargo package -p astral-ini --locked
+      - name: Check packaged licenses
+        run: |
+          tar -xOf target/package/astral-ini-*.crate --wildcards '*/LICENSE-MIT' | cmp LICENSE-MIT -
+          tar -xOf target/package/astral-ini-*.crate --wildcards '*/LICENSE-APACHE' | cmp LICENSE-APACHE -
