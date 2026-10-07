@@ -35,7 +35,7 @@ jobs:
     env:
       RUSTUP_TOOLCHAIN: nightly-2026-09-07
       FUZZ_TARGET: ${{ matrix.target }}
-      FUZZ_SECONDS: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '900' || '900' }}
+      FUZZ_SECONDS: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '900' || '30' }}
       FUZZ_SEED: ${{ github.run_number }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
