@@ -1,0 +1,119 @@
+[
+  {
+    "file": "entry-points-pip.ini",
+    "package": "pip",
+    "version": "26.2.1",
+    "source": "https://pypi.org/project/pip/26.2.1/",
+    "member": "pip-26.2.1.dist-info/entry_points.txt",
+    "sha256": "5617fcb34218817dfb9ad778bc62fbdc13dcc5d2a7a9e0853f3079f9ddf4c7ca",
+    "license": "MIT",
+    "license_file": "licenses/pip.txt"
+  },
+  {
+    "file": "entry-points-pytest.ini",
+    "package": "pytest",
+    "version": "9.0.3",
+    "source": "https://pypi.org/project/pytest/9.0.3/",
+    "member": "pytest-9.0.3.dist-info/entry_points.txt",
+    "sha256": "f083eb1cf1f72cd650eefe6d34439c35365893f4a178d83ae23b1333d7aba8be",
+    "license": "MIT",
+    "license_file": "licenses/pytest.txt"
+  },
+  {
+    "file": "entry-points-babel.ini",
+    "package": "babel",
+    "version": "2.18.0",
+    "source": "https://pypi.org/project/babel/2.18.0/",
+    "member": "babel-2.18.0.dist-info/entry_points.txt",
+    "sha256": "6360abd4fdc4f18b7b92acef573e309d3bc3d47dfe0550f814e915a8720605f7",
+    "license": "BSD-3-Clause",
+    "license_file": "licenses/babel.txt"
+  },
+  {
+    "file": "entry-points-setuptools.ini",
+    "package": "setuptools",
+    "version": "81.0.0",
+    "source": "https://pypi.org/project/setuptools/81.0.0/",
+    "member": "setuptools-81.0.0.dist-info/entry_points.txt",
+    "sha256": "ce482d8697ff15af4d544f69e85293dd793d0d1d5f680711538728820b15ee30",
+    "license": "MIT",
+    "license_file": "licenses/setuptools.txt"
+  },
+  {
+    "file": "entry-points-virtualenv.ini",
+    "package": "virtualenv",
+    "version": "20.36.1",
+    "source": "https://pypi.org/project/virtualenv/20.36.1/",
+    "member": "virtualenv-20.36.1.dist-info/entry_points.txt",
+    "sha256": "b5997e4e9f3d1ace2f8cbcaf1ff29874de24cc6ff65c458c01476dd60435a932",
+    "license": "MIT",
+    "license_file": "licenses/virtualenv.txt"
+  },
+  {
+    "file": "entry-points-keyring.ini",
+    "package": "keyring",
+    "version": "25.7.0",
+    "source": "https://pypi.org/project/keyring/25.7.0/",
+    "member": "keyring-25.7.0.dist-info/entry_points.txt",
+    "sha256": "f226f273dcc7d924f52436475a54191c450fc7d9156977d5cbccf969fffa3949",
+    "license": "MIT",
+    "license_file": "licenses/keyring.txt"
+  },
+  {
+    "file": "entry-points-cffi.ini",
+    "package": "cffi",
+    "version": "2.1.1",
+    "source": "https://pypi.org/project/cffi/2.1.1/",
+    "member": "cffi-2.1.1.dist-info/entry_points.txt",
+    "sha256": "a6b6108011f8e27050fe5269bba88c8051b414697880d3b0b6fbe3a03a0b001c",
+    "license": "MIT-0",
+    "license_file": "licenses/cffi.txt"
+  },
+  {
+    "file": "entry-points-pygments.ini",
+    "package": "pygments",
+    "version": "2.21.0",
+    "source": "https://pypi.org/project/pygments/2.21.0/",
+    "member": "pygments-2.21.0.dist-info/entry_points.txt",
+    "sha256": "b945f0f9784c281117e2959c0ada6e4d39cf84bde1ece104da35a2e75550b1af",
+    "license": "BSD-2-Clause",
+    "license_file": "licenses/pygments.txt"
+  },
+  {
+    "file": "entry-points-uvicorn.ini",
+    "package": "uvicorn",
+    "version": "0.52.3",
+    "source": "https://pypi.org/project/uvicorn/0.52.3/",
+    "member": "uvicorn-0.52.3.dist-info/entry_points.txt",
+    "sha256": "156d70fa191cf50830686a28bccbe6d1963bdf0fcd7327167460147c3b0d1b1c",
+    "license": "BSD-3-Clause",
+    "license_file": "licenses/uvicorn.txt"
+  },
+  {
+    "file": "setup-cfg-uv.ini",
+    "package": "uv",
+    "version": "7d998b76a9b3c52c608f84be1d631e2a2fc70c4b",
+    "source": "https://github.com/astral-sh/uv/blob/7d998b76a9b3c52c608f84be1d631e2a2fc70c4b/test/packages/setup_cfg_editable/setup.cfg",
+    "sha256": "b7157e3b4dac4a0f0d63e0f38a7af01bf682495959d599d3fb5d8ac24a401097",
+    "license": "MIT",
+    "license_file": "licenses/uv.txt"
+  },
+  {
+    "file": "setup-cfg-requests.ini",
+    "package": "requests",
+    "version": "2.32.3",
+    "source": "https://github.com/psf/requests/blob/v2.32.3/setup.cfg",
+    "sha256": "68d06c0156b89e98ac163dea286ec652845a1c989da58f07ec36d3b142f1499e",
+    "license": "Apache-2.0",
+    "license_file": "licenses/requests.txt"
+  },
+  {
+    "file": "setup-cfg-urllib3.ini",
+    "package": "urllib3",
+    "version": "1.26.20",
+    "source": "https://github.com/urllib3/urllib3/blob/1.26.20/setup.cfg",
+    "sha256": "e34323929f9f9d889eda288dfa57068b3f765bc2da1c322acbe54c88e06fc5d7",
+    "license": "MIT",
+    "license_file": "licenses/urllib3.txt"
+  }
+]

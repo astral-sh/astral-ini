@@ -1,0 +1,20 @@
+# Conformance
+
+The reference is CPython's `ConfigParser(interpolation=None)`, reading one UTF-8 file with universal newlines. The parser supports its default `=` and `:` delimiters and an `=`-only mode for [entry-point metadata](https://packaging.python.org/en/latest/specifications/entry-points/#file-format). Option names are lowercased by default; case-sensitive mode corresponds to `optionxform = str`. Section names remain case-sensitive.
+
+The contract includes strict duplicate detection, `[DEFAULT]` inheritance, Unicode whitespace, relative indentation, blank lines within multiline values, and full-line `#` and `;` comments. Inline comment markers, quotes, backslashes, and interpolation syntax remain literal. Section and option iteration preserve source order; inherited defaults follow a section's local options, as in Python's section-proxy iteration. The reader rejects options before a section, valueless options, and empty option names.
+
+Python's less obvious rules are part of this contract: section names retain interior whitespace, the last closing bracket ends a header, trailing header text is ignored, and an indented header can continue a preceding value. Tabs count as one indentation character. Repeated `[DEFAULT]` headers are permitted, but repeated default options are rejected. Generic syntax errors report the first invalid line, unless Python would raise a subsequent duplicate error first.
+
+The checked-in corpus was generated with CPython 3.12.13 and Unicode 15.0.0. It covers all four combinations of delimiter and case handling, with packaging examples, whitespace and indentation combinations, malformed inputs, defaults, Unicode casing, and deterministic mixed-line cases. Generated lowercase and contextual-sigma tables pin behavior to Unicode 15, including characters that newer Unicode versions assign different case mappings. Invalid UTF-8 is outside the string reader's input contract.
+
+```sh
+python3 scripts/generate_conformance.py --check
+python3 scripts/generate_unicode.py --check
+python3 scripts/check_unicode.py
+cargo test -p astral-ini --test python
+```
+
+`--write` regenerates the reference corpus. `--stdin` exposes the same oracle as newline-delimited JSON for differential fuzzing. LF, CRLF, and bare CR are normalized as by Python's text-file reader; Python's `read_string` handles bare CR differently and is not the oracle.
+
+Interpolation, custom comment syntax, valueless options, unnamed sections, multi-file merging, and mutation are outside this reader's scope. The [`EXTERNALLY-MANAGED` specification](https://packaging.python.org/en/latest/specifications/externally-managed-environments/#marking-an-interpreter-as-using-an-external-package-manager) also uses interpolation-free `ConfigParser` semantics. Python's [`importlib.metadata` reader](https://github.com/python/cpython/blob/3.12/Lib/importlib/metadata/__init__.py) uses a different INI subset and is not the compatibility target.
