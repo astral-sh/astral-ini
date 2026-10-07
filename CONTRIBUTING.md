@@ -29,17 +29,18 @@ measurements.
 | `reader` | Newline normalization and error locations across all four parser profiles |
 | `lookup` | Section and option lookups agree with iteration, including inherited defaults and name normalization |
 | `python` | Arbitrary text against Python's defaults, section items, and error category and line |
+| `lookup_python` | Independently mutated documents, section names, and option names against Python's lookup results |
 | `structured` | Grammar-generated sections, options, continuations, comments, Unicode, and malformed lines against Python |
 
 The byte-input targets replace invalid UTF-8 with U+FFFD before parsing: the
 library accepts Rust strings, so decoding invalid bytes is the caller's policy.
-Both differential targets check all four combinations of option-name casing and
+The differential targets check all four combinations of option-name casing and
 delimiters through a persistent Python process. The structured target generates
 at most 128 lines per input; this bounds fuzzing work, not the parser API.
 
 The seed corpus includes all Python conformance inputs, captured uv workloads,
-invalid UTF-8 sequences, and grammar rules. Install a nightly Rust toolchain and
-run from the repository root:
+invalid UTF-8 sequences, lookup hits and misses, and grammar rules. Install a
+nightly Rust toolchain and run from the repository root:
 
 ```console
 cargo install cargo-fuzz --version 0.13.2 --locked

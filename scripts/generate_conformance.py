@@ -32,12 +32,18 @@ def parse(request):
         return {"error": {"kind": "DuplicateOption", "line": error.lineno}}
     except configparser.ParsingError as error:
         return {"error": {"kind": "InvalidLine", "line": error.errors[0][0]}}
-    return {
+    result = {
         "defaults": list(map(list, parser.defaults().items())),
         "sections": [
             [name, list(map(list, parser[name].items()))] for name in parser.sections()
         ],
     }
+    if "lookups" in request:
+        result["lookups"] = [
+            parser.get(section, name, fallback=None)
+            for section, name in request["lookups"]
+        ]
+    return result
 
 
 def inputs():
