@@ -15,6 +15,7 @@ benchmark-jemalloc = ["dep:tikv-jemallocator"]
 rustc-hash.workspace = true
 indexmap.workspace = true
 memchr.workspace = true
+smallvec.workspace = true
 
 [dev-dependencies]
 configparser.workspace = true

@@ -14,6 +14,7 @@ repository = "https://github.com/astral-sh/astral-ini"
 rustc-hash = { version = "2.0.0", default-features = false, features = ["std"] }
 indexmap = "2.12.0"
 memchr = "2.7.4"
+smallvec = { version = "1.13.2", default-features = false, features = ["union", "const_generics"] }
 configparser = { version = "=3.2.0", default-features = false }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

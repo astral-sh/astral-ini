@@ -23,8 +23,7 @@ use std::fmt;
 
 use indexmap::IndexMap;
 use rustc_hash::FxBuildHasher;
-
-type Properties<'a> = IndexMap<Cow<'a, str>, Cow<'a, str>, FxBuildHasher>;
+use smallvec::SmallVec;
 
 /// Delimiters accepted between an option name and its value.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
@@ -71,7 +70,7 @@ impl Options {
     pub fn parse(self, input: &str) -> Result<Ini<'_>, Error> {
         let mut ini = Ini {
             sections: IndexMap::default(),
-            defaults: IndexMap::default(),
+            defaults: Properties::default(),
             case_sensitive: self.case_sensitive,
         };
         let mut section = None;
@@ -116,7 +115,7 @@ impl Options {
                 section = Some(if name == "DEFAULT" {
                     SectionIndex::Defaults
                 } else {
-                    let (index, replaced) = ini.sections.insert_full(name, IndexMap::default());
+                    let (index, replaced) = ini.sections.insert_full(name, Properties::default());
                     if replaced.is_some() {
                         return Err(Error::new(ErrorKind::DuplicateSection, line_number));
                     }
@@ -249,6 +248,110 @@ impl<'s> Section<'s, '_> {
                     .filter(move |(name, _)| !self.properties.contains_key(name.as_ref())),
             )
             .map(|(name, value)| (name.as_ref(), value.as_ref()))
+    }
+}
+
+/// Keep short sections inline, preserving insertion indices when promoting to a map.
+#[derive(Debug, Clone)]
+enum Properties<'a> {
+    Small(SmallVec<[(Cow<'a, str>, Cow<'a, str>); 4]>),
+    Large(IndexMap<Cow<'a, str>, Cow<'a, str>, FxBuildHasher>),
+}
+
+impl Default for Properties<'_> {
+    fn default() -> Self {
+        Self::Small(SmallVec::new())
+    }
+}
+
+impl<'a> Properties<'a> {
+    fn insert_full(
+        &mut self,
+        name: Cow<'a, str>,
+        value: Cow<'a, str>,
+    ) -> (usize, Option<Cow<'a, str>>) {
+        match self {
+            Self::Small(properties) => {
+                if let Some((index, (_, previous))) = properties
+                    .iter_mut()
+                    .enumerate()
+                    .find(|(_, (key, _))| *key == name)
+                {
+                    return (index, Some(std::mem::replace(previous, value)));
+                }
+                let index = properties.len();
+                if index < properties.inline_size() {
+                    properties.push((name, value));
+                    return (index, None);
+                }
+                let mut map = IndexMap::with_capacity_and_hasher(index + 1, FxBuildHasher);
+                map.extend(std::mem::take(properties));
+                let result = map.insert_full(name, value);
+                *self = Self::Large(map);
+                result
+            }
+            Self::Large(properties) => properties.insert_full(name, value),
+        }
+    }
+
+    fn get_index(&self, index: usize) -> Option<(&Cow<'a, str>, &Cow<'a, str>)> {
+        match self {
+            Self::Small(properties) => properties.get(index).map(|(name, value)| (name, value)),
+            Self::Large(properties) => properties.get_index(index),
+        }
+    }
+
+    fn get_index_mut(&mut self, index: usize) -> Option<(&Cow<'a, str>, &mut Cow<'a, str>)> {
+        match self {
+            Self::Small(properties) => properties
+                .get_mut(index)
+                .map(|(name, value)| (&*name, value)),
+            Self::Large(properties) => properties.get_index_mut(index),
+        }
+    }
+
+    fn get(&self, query: &str) -> Option<&Cow<'a, str>> {
+        match self {
+            Self::Small(properties) => properties
+                .iter()
+                .find(|(name, _)| name.as_ref() == query)
+                .map(|(_, value)| value),
+            Self::Large(properties) => properties.get(query),
+        }
+    }
+
+    fn contains_key(&self, name: &str) -> bool {
+        self.get(name).is_some()
+    }
+
+    fn iter(&self) -> PropertiesIter<'_, 'a> {
+        match self {
+            Self::Small(properties) => PropertiesIter::Small(properties.iter()),
+            Self::Large(properties) => PropertiesIter::Large(properties.iter()),
+        }
+    }
+}
+
+enum PropertiesIter<'s, 'a> {
+    Small(std::slice::Iter<'s, (Cow<'a, str>, Cow<'a, str>)>),
+    Large(indexmap::map::Iter<'s, Cow<'a, str>, Cow<'a, str>>),
+}
+
+impl<'s, 'a> Iterator for PropertiesIter<'s, 'a> {
+    type Item = (&'s Cow<'a, str>, &'s Cow<'a, str>);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self {
+            Self::Small(iter) => iter.next().map(|(name, value)| (name, value)),
+            Self::Large(iter) => iter.next(),
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        match self {
+            Self::Small(iter) => iter.size_hint(),
+            Self::Large(iter) => iter.size_hint(),
+        }
     }
 }
 
