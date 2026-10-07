@@ -23,7 +23,7 @@ use std::fmt;
 
 use indexmap::IndexMap;
 
-type Properties<'a> = IndexMap<Cow<'a, str>, Cow<'a, str>>;
+type Properties<'a> = IndexMap<Cow<'a, str>, Cow<'a, str>, ahash::RandomState>;
 
 /// Delimiters accepted between an option name and its value.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
@@ -68,9 +68,10 @@ impl Options {
     /// line number; malformed lines are deferred as in Python's parser, so a
     /// later duplicate can take precedence.
     pub fn parse(self, input: &str) -> Result<Ini<'_>, Error> {
+        let state = ahash::RandomState::new();
         let mut ini = Ini {
-            sections: IndexMap::new(),
-            defaults: IndexMap::new(),
+            sections: IndexMap::with_hasher(state.clone()),
+            defaults: IndexMap::with_hasher(state),
             case_sensitive: self.case_sensitive,
         };
         let mut section = None;
@@ -115,7 +116,8 @@ impl Options {
                 section = Some(if name == "DEFAULT" {
                     SectionIndex::Defaults
                 } else {
-                    let (index, replaced) = ini.sections.insert_full(name, IndexMap::new());
+                    let properties = IndexMap::with_hasher(ini.sections.hasher().clone());
+                    let (index, replaced) = ini.sections.insert_full(name, properties);
                     if replaced.is_some() {
                         return Err(Error::new(ErrorKind::DuplicateSection, line_number));
                     }
@@ -158,7 +160,7 @@ impl Options {
 /// An immutable INI document whose strings borrow the input where possible.
 #[derive(Debug, Clone)]
 pub struct Ini<'a> {
-    sections: IndexMap<&'a str, Properties<'a>>,
+    sections: IndexMap<&'a str, Properties<'a>, ahash::RandomState>,
     defaults: Properties<'a>,
     case_sensitive: bool,
 }
