@@ -1,0 +1,31 @@
+[workspace]
+members = ["crates/*"]
+exclude = ["fuzz"]
+resolver = "2"
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+rust-version = "1.97"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/viarius-experiments/astral-ini"
+
+[workspace.dependencies]
+indexmap = "2.12.0"
+memchr = "2.7.4"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+unreachable_pub = "warn"
+missing_docs = "warn"
+
+[workspace.lints.clippy]
+dbg_macro = "warn"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.profiling]
+inherits = "release"
+debug = true

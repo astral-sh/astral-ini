@@ -1,0 +1,17 @@
+[package]
+name = "astral-ini"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "../../README.md"
+description = "A high-performance INI parser designed for Python packaging"
+
+[dependencies]
+indexmap.workspace = true
+memchr.workspace = true
+
+[lints]
+workspace = true
+
