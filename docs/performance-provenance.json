@@ -18,18 +18,18 @@
     "samples_per_observation": 19,
     "target_sample_ms": 3,
     "warmup_ms": 10,
-    "order": "system then jemalloc; parser order alternates each round and case",
+    "order": "Six balanced A/B/C orders, cases shuffled each round, alternating allocator order; current build selected without control normalization.",
     "observations": 1104,
     "samples": 20976
   },
-  "sources_sha256": "ab3bdf5a505d413c4403e28883c534465a5963c2a10264e97a55a70a7ae30ba0",
+  "sources_sha256": "d0cb7cf87efe0feed19d68a52c6f9027953da8204ac0c83562cb3d313aa5f7b2",
   "sources": {
     "Cargo.lock": "c662ae30261b1f366af8fc69f301a6878e2d4662812e7a9671435000244c59f9",
     "Cargo.toml": "fc6f17cdd3d3b00bcdeb6ef0448a635665bbeaf7460fd59552719b76341f7aa4",
     "crates/astral-ini/Cargo.toml": "a3c889737396c4f2eff53bbc12426816a0f203d93da5fde58a99ce4f92cb8999",
     "crates/astral-ini/benches/parse.rs": "d058dfefe3bf1af97bb5fcfcbcfcf6f487242e1bd0361c49a5da88e87835d082",
     "crates/astral-ini/benches/support/mod.rs": "6766138f7fbcc4cd37c2cf9a1b147088adb93402191d9f37254e1a92e20aa175",
-    "crates/astral-ini/src/lib.rs": "39d2971ab9f6d6ccee34437ae04306297715c4fa33add9fd4d3f3ba467ba6a8d",
+    "crates/astral-ini/src/lib.rs": "99310f5391060e2c3514557f4e67fb086bb72f12abee5743e12082264dadadad",
     "crates/astral-ini/src/unicode.rs": "aefa7460ef0b1d515199d7b491f4daf04796668bbd66d7e4dcbedfe3ee045b8b",
     "crates/astral-ini/src/unicode_data.rs": "a79505bbd1c817829d26ebd72d265a165a7776071e39ae83c47e27331ea534f9",
     "crates/astral-ini/tests/fixtures/workloads/entry-points-babel.ini": "6360abd4fdc4f18b7b92acef573e309d3bc3d47dfe0550f814e915a8720605f7",
@@ -61,19 +61,101 @@
   "runs": [
     {
       "allocator": "system",
-      "binary_sha256": "212ef770830db8586089a498c7710a01a04670571c2fb91be105f884d8058bd6",
-      "raw_sha256": "987b17658e3423898195f0807f2bc5982940425b41939048c07880cd54c22337",
-      "started_unix": 1791396448.2025805,
-      "completed_unix": 1791396500.9201827
+      "binary_sha256": "9416e3ff2352500ffcbf53aa14728b95511ec87b10aa8cd86061a2ee983ef377",
+      "raw_sha256": "e40c44a7aaec4f161a962d69eccc8a1e51e42ddbac91f3bdbc4db69c8416f828",
+      "started_unix": 1791397206.4805882,
+      "completed_unix": 1791397528.9541745
     },
     {
       "allocator": "jemalloc",
-      "binary_sha256": "1e6fdc8092316207f990205ee1ecc2bd8cae72a903dc8f6cdbcf82a40a7482c2",
-      "raw_sha256": "9a86cf8d40af6ec7d0d684f0a59bf5f6c18259282cf2adc9768ffb38ac4815e3",
-      "started_unix": 1791396500.9247031,
-      "completed_unix": 1791396553.5161176
+      "binary_sha256": "71251fd89a16f6932d1aa3ddcae2c46e2809873454e2fc042d9600e52e53cd41",
+      "raw_sha256": "dfd475f63f89c30a7db88e9a0cb66f60dea479dfbbf10c219f0041e9751e1220",
+      "started_unix": 1791397206.4805882,
+      "completed_unix": 1791397528.9541745
     }
   ],
   "allocations_sha256": "a137eb1e48117f227bf77eb6a94e066d866aadae31b62ecc3572cb0380f24caf",
-  "source_verification": "Current sources were rebuilt in isolated output directories and reproduced the measured release binaries byte-for-byte."
+  "source_verification": "Current source and binary hashes matched before and after all six balanced rounds; builds used isolated output directories.",
+  "trim_comparison": {
+    "baseline_source_commit": "4ed16ea164b76c2db320fc45bfea6f001bd7c41b",
+    "baseline_sources": {
+      "Cargo.lock": "c662ae30261b1f366af8fc69f301a6878e2d4662812e7a9671435000244c59f9",
+      "Cargo.toml": "fc6f17cdd3d3b00bcdeb6ef0448a635665bbeaf7460fd59552719b76341f7aa4",
+      "crates/astral-ini/Cargo.toml": "a3c889737396c4f2eff53bbc12426816a0f203d93da5fde58a99ce4f92cb8999",
+      "crates/astral-ini/benches/parse.rs": "d058dfefe3bf1af97bb5fcfcbcfcf6f487242e1bd0361c49a5da88e87835d082",
+      "crates/astral-ini/benches/support/mod.rs": "6766138f7fbcc4cd37c2cf9a1b147088adb93402191d9f37254e1a92e20aa175",
+      "crates/astral-ini/src/lib.rs": "39d2971ab9f6d6ccee34437ae04306297715c4fa33add9fd4d3f3ba467ba6a8d",
+      "crates/astral-ini/src/unicode.rs": "aefa7460ef0b1d515199d7b491f4daf04796668bbd66d7e4dcbedfe3ee045b8b",
+      "crates/astral-ini/src/unicode_data.rs": "a79505bbd1c817829d26ebd72d265a165a7776071e39ae83c47e27331ea534f9",
+      "crates/astral-ini/tests/fixtures/workloads/entry-points-babel.ini": "6360abd4fdc4f18b7b92acef573e309d3bc3d47dfe0550f814e915a8720605f7",
+      "crates/astral-ini/tests/fixtures/workloads/entry-points-cffi.ini": "a6b6108011f8e27050fe5269bba88c8051b414697880d3b0b6fbe3a03a0b001c",
+      "crates/astral-ini/tests/fixtures/workloads/entry-points-keyring.ini": "f226f273dcc7d924f52436475a54191c450fc7d9156977d5cbccf969fffa3949",
+      "crates/astral-ini/tests/fixtures/workloads/entry-points-pip.ini": "5617fcb34218817dfb9ad778bc62fbdc13dcc5d2a7a9e0853f3079f9ddf4c7ca",
+      "crates/astral-ini/tests/fixtures/workloads/entry-points-pygments.ini": "b945f0f9784c281117e2959c0ada6e4d39cf84bde1ece104da35a2e75550b1af",
+      "crates/astral-ini/tests/fixtures/workloads/entry-points-pytest.ini": "f083eb1cf1f72cd650eefe6d34439c35365893f4a178d83ae23b1333d7aba8be",
+      "crates/astral-ini/tests/fixtures/workloads/entry-points-setuptools.ini": "ce482d8697ff15af4d544f69e85293dd793d0d1d5f680711538728820b15ee30",
+      "crates/astral-ini/tests/fixtures/workloads/entry-points-uvicorn.ini": "156d70fa191cf50830686a28bccbe6d1963bdf0fcd7327167460147c3b0d1b1c",
+      "crates/astral-ini/tests/fixtures/workloads/entry-points-virtualenv.ini": "b5997e4e9f3d1ace2f8cbcaf1ff29874de24cc6ff65c458c01476dd60435a932",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/babel.txt": "86bad5758c7859ba06251f8f12eee885eca31369923dfb2b87a7c13c3634d870",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/cffi.txt": "5ba24ddc57067f9249add644c3afc41a5d6dc37e23433ef759d95df370b0af63",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/keyring.txt": "5a57cb4db85e2a2dd88c290628908add57e3451449e0a9a71fdfb38776fd759d",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/pip.txt": "634300a669d49aeae65b12c6c48c924c51a4cdf3d1ff086dc3456dc8bcaa2104",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/pygments.txt": "a9d66f1d526df02e29dce73436d34e56e8632f46c275bbdffc70569e882f9f17",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/pytest.txt": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/requests.txt": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/setuptools.txt": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/urllib3.txt": "c37bf186e27cf9dbe9619e55edfe3cea7b30091ceb3da63c7dacbe0e6d77907b",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/uv.txt": "860e3d7a86b84e6a7012c7a635fc64df475cebc6cce34dfeb73a5982ec58176c",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/uvicorn.txt": "efe1acf3e62fb99c288b0ec73e5a773b7268ef4320fe757ea994214e4b63c371",
+      "crates/astral-ini/tests/fixtures/workloads/licenses/virtualenv.txt": "5c15919378c5b2aaab7b19cea70d8cdc75f76879e32454e4c0399f8b71d171e9",
+      "crates/astral-ini/tests/fixtures/workloads/setup-cfg-requests.ini": "68d06c0156b89e98ac163dea286ec652845a1c989da58f07ec36d3b142f1499e",
+      "crates/astral-ini/tests/fixtures/workloads/setup-cfg-urllib3.ini": "e34323929f9f9d889eda288dfa57068b3f765bc2da1c322acbe54c88e06fc5d7",
+      "crates/astral-ini/tests/fixtures/workloads/setup-cfg-uv.ini": "b7157e3b4dac4a0f0d63e0f38a7af01bf682495959d599d3fb5d8ac24a401097",
+      "crates/astral-ini/tests/fixtures/workloads/sources.json": "755b0d95204568c371211d5645d2aac44a6ba788ac9cfbb7e7e2723f0ef3547b"
+    },
+    "baseline_sources_sha256": "ab3bdf5a505d413c4403e28883c534465a5963c2a10264e97a55a70a7ae30ba0",
+    "baseline_binaries": {
+      "system": "212ef770830db8586089a498c7710a01a04670571c2fb91be105f884d8058bd6",
+      "jemalloc": "1e6fdc8092316207f990205ee1ecc2bd8cae72a903dc8f6cdbcf82a40a7482c2"
+    },
+    "candidate_binaries": {
+      "system": "9416e3ff2352500ffcbf53aa14728b95511ec87b10aa8cd86061a2ee983ef377",
+      "jemalloc": "71251fd89a16f6932d1aa3ddcae2c46e2809873454e2fc042d9600e52e53cd41"
+    },
+    "raw_sha256": "7371cbed036638e4371d4cc73d47f03af571878c7dbaae0408552463e622cb1f",
+    "orders": [
+      [
+        "A",
+        "B",
+        "C"
+      ],
+      [
+        "B",
+        "C",
+        "A"
+      ],
+      [
+        "C",
+        "A",
+        "B"
+      ],
+      [
+        "A",
+        "C",
+        "B"
+      ],
+      [
+        "C",
+        "B",
+        "A"
+      ],
+      [
+        "B",
+        "A",
+        "C"
+      ]
+    ],
+    "observations": 3312,
+    "samples": 62928
+  }
 }

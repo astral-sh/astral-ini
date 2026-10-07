@@ -28,8 +28,8 @@ Owned extraction from captured packaging files:
 
 | Parser | pip | Babel | setuptools | virtualenv | Requests setup.cfg |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| astral-ini | 0.38 | 1.56 | 4.20 | 2.46 | 1.17 |
-| configparser 3.2.0 | 1.99 | 9.13 | 33.87 | 17.57 | 5.69 |
+| astral-ini | 0.37 | 1.54 | 4.11 | 2.38 | 1.07 |
+| configparser 3.2.0 | 2.01 | 9.25 | 34.32 | 17.83 | 5.78 |
 
 Times in microseconds on Linux x86-64 with the system allocator; lower is better.
 See [performance](docs/performance.md) for all workloads and measurement details.

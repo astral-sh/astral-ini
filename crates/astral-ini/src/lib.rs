@@ -138,7 +138,7 @@ impl Options {
                 invalid.get_or_insert(Error::new(ErrorKind::InvalidLine, line_number));
             }
             let name = normalize(name, self.case_sensitive);
-            let value = value[delimiter + 1..].trim_matches(whitespace);
+            let value = value[delimiter + 1..].trim_start_matches(whitespace);
             let properties = ini.properties_mut(section);
             let (index, replaced) = properties.insert_full(name, Cow::Borrowed(value));
             if replaced.is_some() {
