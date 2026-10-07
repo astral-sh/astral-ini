@@ -1,0 +1,7 @@
+/target/
+/fuzz/target/
+/fuzz/artifacts/
+/fuzz/generated/
+/fuzz/logs/
+__pycache__/
+*.profraw
