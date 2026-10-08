@@ -15,7 +15,7 @@ A high-performance INI parser designed for Python packaging.
 | configparser 3.2.0 | 2.06 |  9.26 |      34.34 |      17.97 |               5.98 |
 
 <sub>Times in microseconds (µs);
-[lower is better](https://github.com/astral-sh/astral-ini/blob/4b5d0b59810fd680af966a4563f0656bea23d2fb/docs/performance.md).</sub>
+[lower is better](https://github.com/astral-sh/astral-ini/blob/8fbda71fef28a5156f30fa561585430d5bf7787c/docs/performance.md).</sub>
 
 ## Example usage
 
