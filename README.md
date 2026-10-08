@@ -7,12 +7,6 @@ A high-performance INI parser designed for Python packaging.
 > This README was written by a human, but all code changes, PR summaries, and
 > additional documentation were authored entirely by GPT-6 Astra in Codex.
 
-## Highlights
-
-- Three runtime dependencies by default: `indexmap`, `memchr`, and `rustc-hash`.
-- No unsafe Rust in the library.
-- Tested against Python's `ConfigParser` with interpolation disabled.
-
 ## Benchmarks
 
 Parse INI, collect owned entry-point names and values or the package name from
