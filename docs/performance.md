@@ -10,30 +10,24 @@ six round aggregates, not confidence intervals.
 
 | Inputs | Operation | System allocator | jemalloc |
 | --- | --- | --- | --- |
-| 11 captured files | Parse and drop | 6.63× (6.56–6.69×) | 5.67× (5.59–5.87×) |
-| 11 captured files | Owned extraction | 5.76× (5.68–5.84×) | 4.98× (4.94–5.01×) |
-| 12 synthetic cases | Parse and drop | 8.23× (8.17–8.30×) | 6.97× (6.91–7.16×) |
-| 12 synthetic cases | Owned extraction | 6.71× (6.67–6.77×) | 5.84× (5.81–5.88×) |
+| 11 captured files | Parse and drop | 8.12× (8.06–8.17×) | 7.31× (7.23–7.39×) |
+| 11 captured files | Owned extraction | 6.75× (6.68–6.96×) | 6.13× (5.95–6.24×) |
+| 12 synthetic cases | Parse and drop | 9.58× (9.36–9.70×) | 8.76× (8.47–9.08×) |
+| 12 synthetic cases | Owned extraction | 7.26× (7.12–7.34×) | 6.96× (6.82–7.24×) |
 
 Every case, operation, and allocator took less time in all six paired rounds.
-The smallest geometric speedup was 1.84× for the synthetic comment-heavy parse;
-the smallest improvement in any individual round was 43.6% less time.
+The smallest geometric speedup was 1.77× for the synthetic comment-heavy parse;
+the smallest improvement in any individual round was 43.3% less time.
 [`performance.csv`](performance.csv) includes all 92 case/operation/allocator
 comparisons, absolute times, and round ranges.
 
-Removing the redundant trailing-value trim reduced captured-file parse time by
-1.69% with the system allocator and 2.72% with jemalloc; owned extraction improved
-by 2.23% and 3.63%. The synthetic Unicode case cost about 6 ns more to parse and
-10 ns more to extract with the system allocator, consistently across all six
-rounds. Captured `configparser` control aggregates also shifted between builds
-(−1.75% to +1.16%); these comparisons use direct timings without normalization.
-[`trim-comparison.csv`](trim-comparison.csv) includes every case and its paired
-control, including the small costs that aggregate improvements can hide.
+The README tables use the system allocator and report microseconds, taking the
+geometric mean of each parser's six round medians.
 
 Across the 11 captured files, parsing made 110 allocation or reallocation
-requests versus 1,162, requesting 16,061 versus 59,239 bytes.
+requests versus 1,162, requesting 15,341 versus 59,239 bytes.
 Owned extraction made 139 allocation or reallocation
-requests versus 1,191, requesting 17,918 versus 61,096 bytes.
+requests versus 1,191, requesting 17,198 versus 61,096 bytes.
 No case increased total allocation requests or requested bytes. Some cases made
 more reallocations as ordered maps grew, while making fewer allocations overall.
 
@@ -42,8 +36,8 @@ LTO, and one codegen unit. Both allocator builds used identical source files;
 source and binary hashes were checked before and after timing. The run contains
 1,104 observations and 20,976 samples. Compiler, source, binary, and raw-result
 hashes are recorded in [`performance-provenance.json`](performance-provenance.json).
-The binaries were built in isolated directories. The run used six balanced
-orders of three parser builds, shuffled cases, and alternating allocator order;
+The binaries were built in isolated directories. The run used six rounds with
+rotating order across four builds, shuffled cases, and alternating allocator order;
 the table uses this build and its own `configparser` timings.
 
 ```console
