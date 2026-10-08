@@ -9,9 +9,6 @@ A high-performance INI parser designed for Python packaging.
 
 ## Benchmarks
 
-Parse INI, collect owned entry-point names and values or the package name from
-`setup.cfg`, and drop the output (`astral_ini::Ini`).
-
 | Parser             |  pip | Babel | setuptools | virtualenv | Requests setup.cfg |
 | ------------------ | ---: | ----: | ---------: | ---------: | -----------------: |
 | astral-ini         | 0.34 |  1.27 |       3.36 |       1.99 |               0.97 |
