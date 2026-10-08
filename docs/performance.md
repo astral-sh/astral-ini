@@ -21,7 +21,7 @@ the smallest improvement in any individual round was 43.3% less time.
 [`performance.csv`](performance.csv) includes all 92 case/operation/allocator
 comparisons, absolute times, and round ranges.
 
-The README tables use the system allocator and report microseconds, taking the
+The README benchmark uses the system allocator and reports microseconds, taking the
 geometric mean of each parser's six round medians.
 
 Across the 11 captured files, parsing made 110 allocation or reallocation

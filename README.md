@@ -15,8 +15,6 @@ A high-performance INI parser designed for Python packaging.
 
 ## Benchmarks
 
-### Owned extraction
-
 Parse INI, collect owned entry-point names and values or the package name from
 `setup.cfg`, and drop the output (`astral_ini::Ini`).
 
@@ -24,19 +22,6 @@ Parse INI, collect owned entry-point names and values or the package name from
 | ------------------ | ---: | ----: | ---------: | ---------: | -----------------: |
 | astral-ini         | 0.34 |  1.27 |       3.36 |       1.99 |               0.97 |
 | configparser 3.2.0 | 2.06 |  9.26 |      34.34 |      17.97 |               5.98 |
-
-<sub>Times in microseconds (µs);
-[lower is better](https://github.com/astral-sh/astral-ini/blob/4b5d0b59810fd680af966a4563f0656bea23d2fb/docs/performance.md).</sub>
-
-### Document construction
-
-Parse INI into each library's native document and drop it
-(`astral_ini::Ini`).
-
-| Parser             |  pip | Babel | setuptools | virtualenv | Requests setup.cfg |
-| ------------------ | ---: | ----: | ---------: | ---------: | -----------------: |
-| astral-ini         | 0.22 |  1.17 |       3.30 |       1.86 |               0.93 |
-| configparser 3.2.0 | 1.83 |  9.09 |      34.01 |      17.61 |               5.98 |
 
 <sub>Times in microseconds (µs);
 [lower is better](https://github.com/astral-sh/astral-ini/blob/4b5d0b59810fd680af966a4563f0656bea23d2fb/docs/performance.md).</sub>
