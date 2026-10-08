@@ -4,9 +4,9 @@ The benchmark compares `astral-ini` with `configparser` 3.2.0 using uv's current
 `Ini::read` API. Both parsers receive the same valid documents, and the harness
 checks full parsed output and extracted values for equality before timing.
 
-On a Linux x86-64 AMD EPYC Milan VM, pinned to CPU 26, the 2026-10-07 run measured
-these geometric speedups over `configparser`. Parentheses show the range of the
-six round aggregates, not confidence intervals.
+On a Linux x86-64 AMD EPYC Milan VM with glibc 2.39, pinned to CPU 26, the
+2026-10-07 run measured these geometric speedups over `configparser`. Parentheses
+show the range of the six round aggregates, not confidence intervals.
 
 | Inputs | Operation | System allocator | jemalloc |
 | --- | --- | --- | --- |
@@ -31,11 +31,12 @@ requests versus 1,191, requesting 17,198 versus 61,096 bytes.
 No case increased total allocation requests or requested bytes. Some cases made
 more reallocations as ordered maps grew, while making fewer allocations overall.
 
-The binaries used rustc 1.98.1-dev (`f6270311094`), optimization level 3, thin
-LTO, and one codegen unit. Both allocator builds used identical source files;
+The binaries used source commit
+[`e08cefa`](https://github.com/astral-sh/astral-ini/commit/e08cefab922a70d9db9a19abbd0fddc8dd77bfc4),
+rustc 1.98.1-dev (`f6270311094`, LLVM 22.1.8), optimization level 3, thin LTO,
+and one codegen unit. Both allocator builds used identical source files;
 source and binary hashes were checked before and after timing. The run contains
-1,104 observations and 20,976 samples. Compiler, source, binary, and raw-result
-hashes are recorded in [`performance-provenance.json`](performance-provenance.json).
+1,104 observations and 20,976 samples.
 The binaries were built in isolated directories. The run used six rounds with
 rotating order across four builds, shuffled cases, and alternating allocator order;
 the table uses this build and its own `configparser` timings.
