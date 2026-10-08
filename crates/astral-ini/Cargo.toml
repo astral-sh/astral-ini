@@ -12,6 +12,7 @@ description = "A high-performance INI parser designed for Python packaging"
 benchmark-jemalloc = ["dep:tikv-jemallocator"]
 
 [dependencies]
+rustc-hash.workspace = true
 indexmap.workspace = true
 memchr.workspace = true
 

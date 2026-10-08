@@ -22,8 +22,9 @@ use std::borrow::Cow;
 use std::fmt;
 
 use indexmap::IndexMap;
+use rustc_hash::FxBuildHasher;
 
-type Properties<'a> = IndexMap<Cow<'a, str>, Cow<'a, str>>;
+type Properties<'a> = IndexMap<Cow<'a, str>, Cow<'a, str>, FxBuildHasher>;
 
 /// Delimiters accepted between an option name and its value.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
@@ -69,8 +70,8 @@ impl Options {
     /// later duplicate can take precedence.
     pub fn parse(self, input: &str) -> Result<Ini<'_>, Error> {
         let mut ini = Ini {
-            sections: IndexMap::new(),
-            defaults: IndexMap::new(),
+            sections: IndexMap::default(),
+            defaults: IndexMap::default(),
             case_sensitive: self.case_sensitive,
         };
         let mut section = None;
@@ -115,7 +116,7 @@ impl Options {
                 section = Some(if name == "DEFAULT" {
                     SectionIndex::Defaults
                 } else {
-                    let (index, replaced) = ini.sections.insert_full(name, IndexMap::new());
+                    let (index, replaced) = ini.sections.insert_full(name, IndexMap::default());
                     if replaced.is_some() {
                         return Err(Error::new(ErrorKind::DuplicateSection, line_number));
                     }
@@ -158,7 +159,7 @@ impl Options {
 /// An immutable INI document whose strings borrow the input where possible.
 #[derive(Debug, Clone)]
 pub struct Ini<'a> {
-    sections: IndexMap<&'a str, Properties<'a>>,
+    sections: IndexMap<&'a str, Properties<'a>, FxBuildHasher>,
     defaults: Properties<'a>,
     case_sensitive: bool,
 }
