@@ -1,6 +1,10 @@
 [dependency-groups]
 release = ["rooster==0.1.1"]
 
+[tool.uv]
+require-build-hashes = true
+preview-features = ["build-dependency-hashes"]
+
 [tool.uv.dependency-groups]
 release = { requires-python = ">=3.12" }
 
